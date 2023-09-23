@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="custom-elements/better-input.js"></script>
+    <script src="index.js"></script>
+  </head>
+  <body>
+    <fieldset>
+      <legend>Settings</legend>
+
+      <div title="Starts off inactive so you can set exceptions before the plugin starts removing stuff">
+        <label>Active: </label>
+        <input id="active" type="checkbox">
+      </div>
+
+      <div>
+        <label>Save settings using bookmark: </label>
+        <input id="save-using-bookmark" type="checkbox">
+      </div>
+
+      <div>
+        Delete after
+        <better-input id="max-age--amount" type="number" min="1"></better-input>
+        <select id="max-age--type">
+          <option value="year">year(s)</option>
+          <option value="month">month(s)</option>
+          <option value="day">day(s)</option>
+          <option value="hour">hour(s)</option>
+          <option value="minute">minute(s)</option>
+        </select>
+      </div>
+
+      <div>
+        Check after not interacting with the browser for <better-input id="idle-interval" type="number" min="15"></better-input> seconds
+      </div>
+
+      <div>
+        <label>Remove cookies if there is no history left for the removed page: </label>
+        <input id="remove-cookies-if-no-history-left" type="checkbox">
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Exceptions</legend>
+
+      <div id="exceptions-container"></div>
+      <button id="add-exception-btn">Add exception</button>
+    </fieldset>
+
+    <fieldset>
+      <legend>Advanced</legend>
+
+      <div title="This should be fine for most people, but if you have a shitton of exceptions, a small number here might hinder the plugin from removing data">
+        Max history elements to check at a time: <better-input id="max-history-elements-at-a-time" type="number"></better-input>
+      </div>
+    </fieldset>
+  </body>
+</html>

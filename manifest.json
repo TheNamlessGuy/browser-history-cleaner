@@ -1,0 +1,53 @@
+{
+  "manifest_version": 2,
+  "name": "History Cleaner",
+  "version": "0.0.2",
+  "description": "Cleans browser history in set intervals, with the option of keeping some pages",
+  "author": "TheNamlessGuy",
+  "homepage_url": "https://github.com/TheNamlessGuy/browser-history-cleaner",
+  "developer": {
+    "name": "TheNamlessGuy",
+    "url": "https://github.com/TheNamlessGuy/browser-history-cleaner"
+  },
+
+  "icons": {
+    "16": "res/icon/16.png",
+    "19": "res/icon/19.png",
+    "32": "res/icon/32.png",
+    "38": "res/icon/38.png",
+    "48": "res/icon/48.png",
+    "96": "res/icon/96.png"
+  },
+
+  "permissions": [
+    "<all_urls>",
+    "bookmarks",
+    "cookies",
+    "storage",
+    "unlimitedStorage",
+    "history",
+    "idle"
+  ],
+
+  "background": {
+    "scripts": [
+      "src/options/bookmark.js",
+      "src/options/opts.js",
+      "src/communication.js",
+      "src/historymanager.js",
+
+      "src/background.js"
+    ]
+  },
+
+  "options_ui": {
+    "page": "src/options/page/index.html",
+    "browser_style": true
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "history-cleaner@TheNamlessGuy.github.io"
+    }
+  }
+}
