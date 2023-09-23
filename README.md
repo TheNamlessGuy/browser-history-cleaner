@@ -1,4 +1,4 @@
-# browser-history-cleaner
+# History Cleaner
 Firefox plugin for cleaning your browser history.
 
 Deletes history, and (optionally) cookies for all entries older than a set amount of years/months/days/hours/minutes/seconds, with the option of ignoring some websites.
