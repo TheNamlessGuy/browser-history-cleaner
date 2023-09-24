@@ -7,7 +7,7 @@ const Opts = {
     },
     idleInterval: 15, // seconds
     maxHistoryElementsAtATime: 9999,
-    exceptions: [], // {type: 'host'|'full', value: string}[]
+    exceptions: [], // {type: 'host'|'full'|'cookie', value: string}[]
     removeCookiesIfNoHistoryLeft: true,
   },
 

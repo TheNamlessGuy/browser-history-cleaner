@@ -30,8 +30,6 @@ const HistoryManager = {
       end.setHours(end.getHours() - opts.maxAge.amount);
     } else if (opts.maxAge.type === 'minute') {
       end.setMinutes(end.getMinutes() - opts.maxAge.amount);
-    } else if (opts.maxAge.type === 'second') {
-      end.setSeconds(end.getSeconds() - opts.maxAge.amount);
     }
 
     const exceptions = opts.exceptions.map((x) => {
@@ -39,7 +37,14 @@ const HistoryManager = {
         type: x.type,
         value: new RegExp(x.value),
       };
-    });
+    }).reduce((data, exception) => {
+      if (exception.type === 'cookie') {
+        data.cookie.push(exception);
+      } else {
+        data.url.push(exception);
+      }
+      return data;
+    }, {url: [], cookie: []});
 
     while (true) {
       const results = await browser.history.search({text: '', startTime: 0, maxResults: opts.maxHistoryElementsAtATime});
@@ -49,10 +54,10 @@ const HistoryManager = {
         }
 
         const url = new URL(x.url);
-        return !exceptions.some((exception) => {
+        return !exceptions.url.some((exception) => {
           if (exception.type === 'host') {
             return url.host.match(exception.value);
-          } else { // exception.type === 'full'
+          } else if (exception.type === 'full') {
             return x.url.match(exception.value);
           }
         });
@@ -66,12 +71,14 @@ const HistoryManager = {
         const url = new URL(entry.url);
         await browser.history.deleteUrl({url: entry.url});
 
-        const data = await browser.history.search({text: url.host, startTime: 0, maxResults: 1});
-        if (data.length === 0) {
-          const urlStr = `${url.protocol}//${url.host}`;
-          const cookies = await browser.cookies.getAll({firstPartyDomain: null, url: urlStr});
-          for (const cookie of cookies) {
-            await browser.cookies.remove({name: cookie.name, url: urlStr});
+        const cookies = await browser.cookies.getAll({firstPartyDomain: null, url: `${url.protocol}//${url.host}`});
+        for (const cookie of cookies) {
+          const excepted = exceptions.cookie.some((exception) => cookie.domain.match(exception.value));
+          if (excepted) { continue; }
+
+          const data = await browser.history.search({text: cookie.domain, startTime: 0, maxResults: 1});
+          if (data.length === 0) {
+            await browser.cookies.remove({firstPartyDomain: null, name: cookie.name, url: cookie.domain});
           }
         }
       }

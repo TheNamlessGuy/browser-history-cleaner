@@ -107,7 +107,7 @@ async function addException(data = null) {
 
   const type = document.createElement('select');
   type.classList.add('exception-type');
-  for (const o of [{value: 'host', display: 'Host'}, {value: 'full', display: 'Full'}]) {
+  for (const o of [{value: 'host', display: 'Host'}, {value: 'full', display: 'Full'}, {value: 'cookie', display: 'Cookie domain'}]) {
     const option = document.createElement('option');
     option.value = o.value;
     option.innerText = o.display;
