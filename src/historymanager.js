@@ -71,6 +71,8 @@ const HistoryManager = {
         const url = new URL(entry.url);
         await browser.history.deleteUrl({url: entry.url});
 
+        if (!opts.removeCookiesIfNoHistoryLeft) { continue; }
+
         const cookies = await browser.cookies.getAll({firstPartyDomain: null, url: `${url.protocol}//${url.host}`});
         for (const cookie of cookies) {
           const excepted = exceptions.cookie.some((exception) => cookie.domain.match(exception.value));

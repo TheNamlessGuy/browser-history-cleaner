@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "History Cleaner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Cleans browser history in set intervals, with the option of keeping some pages",
   "author": "TheNamlessGuy",
   "homepage_url": "https://github.com/TheNamlessGuy/browser-history-cleaner",
