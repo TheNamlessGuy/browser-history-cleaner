@@ -33,6 +33,13 @@ const HistoryManager = {
     }
 
     const exceptions = opts.exceptions.map((x) => {
+      if (x.type === 'visits') {
+        return {
+          type: x.type,
+          value: parseFloat(x.value),
+        };
+      }
+
       return {
         type: x.type,
         value: new RegExp(x.value),
@@ -59,6 +66,8 @@ const HistoryManager = {
             return url.host.match(exception.value);
           } else if (exception.type === 'full') {
             return x.url.match(exception.value);
+          } else if (exception.type === 'visits') {
+            return x.visitCount >= exception.value;
           }
         });
       });

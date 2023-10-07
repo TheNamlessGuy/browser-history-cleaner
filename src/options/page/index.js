@@ -93,6 +93,13 @@ async function save() {
   await BackgroundPage.Opts.set(opts, extras);
 }
 
+const exceptionTypes = [
+  {value: 'host', display: 'Host', valueElement: {placeholder: 'RegExp', type: 'string'}},
+  {value: 'full', display: 'Full', valueElement: {placeholder: 'RegExp', type: 'string'}},
+  {value: 'cookie', display: 'Cookie domain', valueElement: {placeholder: 'RegExp', type: 'string'}},
+  {value: 'visits', display: 'Page has been visited more than X times', valueElement: {placeholder: 'X', type: 'number'}},
+];
+
 async function addException(data = null) {
   const container = document.createElement('div');
   container.classList.add('exception');
@@ -107,22 +114,45 @@ async function addException(data = null) {
 
   const type = document.createElement('select');
   type.classList.add('exception-type');
-  for (const o of [{value: 'host', display: 'Host'}, {value: 'full', display: 'Full'}, {value: 'cookie', display: 'Cookie domain'}]) {
+  for (const o of exceptionTypes) {
     const option = document.createElement('option');
     option.value = o.value;
     option.innerText = o.display;
     type.appendChild(option);
   }
-  if (data != null) { type.value = data.type; }
-  type.addEventListener('change', save);
+  type.addEventListener('change', () => {
+    // Fix entry specifics
+    const entry = exceptionTypes.find(x => x.value === type.value);
+    value.placeholder = entry.valueElement.placeholder;
+    value.type = entry.valueElement.type;
+
+    // Set width - https://stackoverflow.com/a/49693251
+    const select = document.createElement('select');
+    select.classList.add('width-finder');
+    const option = document.createElement('option');
+    option.innerText = entry.display;
+    select.appendChild(option);
+    document.body.appendChild(select);
+    type.style.width = window.getComputedStyle(select).width;
+    select.remove();
+
+    // Save
+    save();
+  });
   container.appendChild(type);
 
-  const value = document.createElement('input');
+  const value = document.createElement('better-input');
   value.classList.add('exception-value');
   value.placeholder = 'RegExp';
-  if (data != null) { value.value = data.value; }
   value.addEventListener('change', save);
   container.appendChild(value);
+
+  if (data != null) {
+    type.value = data.type;
+    value.value = data.value;
+  } else {
+    type.dispatchEvent(new Event('change'));
+  }
 
   document.getElementById('exceptions-container').appendChild(container);
 }

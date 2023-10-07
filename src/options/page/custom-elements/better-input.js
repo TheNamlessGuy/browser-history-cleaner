@@ -3,6 +3,9 @@ class BetterInputElement extends HTMLElement {
   _input;
   _previousValue;
 
+  _input_inputListener;
+  _input_blurListener;
+
   _opts = {
     min: null,
   };
@@ -21,16 +24,33 @@ class BetterInputElement extends HTMLElement {
     }
 
     this._input = document.createElement('input');
-    this._input.addEventListener('input', () => (this._onChange[this._type] ?? this._onChange._base)(this._input.value));
-    this._input.addEventListener('blur', () => (this._onBlur[this._type] ?? this._onBlur._base)());
 
     this._previousValue = this._defaultPrevious[this._type] ?? null;
 
     this.attachShadow({mode: 'closed'}).appendChild(this._input);
   }
 
+  _setType(type) {
+    this._type = type;
+
+    if (this._input_inputListener != null) {
+      this._input.removeEventListener('input', this._input_inputListener);
+    }
+    this._input_inputListener = () => (this._onChange[this._type] ?? this._onChange._base)(this._input.value);
+    this._input.addEventListener('input', this._input_inputListener);
+
+    if (this._input_blurListener != null) {
+      this._input.removeEventListener('blur', this._input_blurListener);
+    }
+    this._input_blurListener = () => (this._onBlur[this._type] ?? this._onBlur._base)();
+    this._input.addEventListener('blur', this._input_blurListener);
+
+    this._input.value = this._defaultPrevious[this._type];
+  }
+
   _defaultPrevious = {
     number: 0,
+    string: '',
   };
 
   _typeCheck = {
@@ -95,6 +115,14 @@ class BetterInputElement extends HTMLElement {
 
   set value(value) {
     (this._onChange[this._type] ?? this._onChange._base)(value ?? this._defaultPrevious[this._type] ?? null);
+  }
+
+  set type(value) {
+    this._setType(value);
+  }
+
+  set placeholder(value) {
+    this._input.placeholder = value;
   }
 }
 
